@@ -1,0 +1,15 @@
+#logo_area {
+    position: fixed; /* 使用 fixed 来实现置顶效果 */
+    left: 1325px;
+    top: 5.2%;
+    transform: translateY(-50%);
+    height: 60px;
+    line-height: 60px;
+    font-weight: 600;
+    font-size: 25px;
+    z-index: 9999; /* 设置一个较高的 z-index 值 */
+}
+
+#logo {
+    height: 60px;
+}
