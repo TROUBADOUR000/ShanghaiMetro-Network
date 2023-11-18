@@ -1,0 +1,13 @@
+{
+  "name": "your-app",
+  "version": "0.0.1",
+  "main": "main.js",
+  "devDependencies": {
+    "electron": "^26.1.0",
+    "electron-packager": "^15.5.2"
+  },
+  "scripts": {
+    "start": "electron .",
+    "package": "electron-packager . ShanghaiSubway --platform=win32 --arch=x64 --out=./ShanghaiSubway --asar --app-version=0.0.1 --overwrite --ignore=node_modules"
+  }
+}

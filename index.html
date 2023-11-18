@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>2153592 胡逸凡 综合应用2 上海地铁交通网路</title>
+    <meta charset='utf-8' name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/jquery-editable-select.min.css">
+    <link rel="stylesheet" href="css/logo.css">
+
+</head>
+<body>
+<!--   标题栏   -->
+<header id="header">
+    <div id="logo_area">
+        <img alt="logo.png" src="images/logo.png" id="logo">
+    </div>
+</header>
+<!-- 添加结点 -->
+<div class="modal fade" id="NodeModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">添加站点</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addNodeForm">
+                    <div class="form-group">
+                        <input name="addNodeName" id="AddNodeName" class="form-control" placeholder="请输入站点名称"
+                               required>
+                    </div>
+                    <div class="form-group">
+                        <input name="addNodeName" id="AddLongtitude" class="form-control" placeholder="请输入站点经度"
+                               required>
+                    </div>
+                    <div class="form-group">
+                        <input name="addNodeName" id="AddLatitude" class="form-control" placeholder="请输入站点纬度"
+                               required>
+                    </div>
+                    <div class="alert alert-primary" style="margin-bottom:20px" role="alert">
+                        上海地铁图的经纬度范围:<br></br>
+                        <strong>经度：[121.019532,121.929585]<br></br>纬度：[30.907250,31.408120]</strong></div>
+                    <div class="form-group" id="NodemessageBox"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="AddNodeButton" type="button" class="btn btn-primary">确认添加</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 添加线路 -->
+<div class="modal fade" id="LineModal" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">添加线路</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="AddLineForm">
+                    <div class="form-group">
+                        <input name="AddLineName" id="AddLineName" class="form-control"
+                               placeholder="请输入线路ID(添加线路)" required>
+                    </div>
+                    <div class="form-group"><p>请在下方选择线路颜色：</p>
+                        <input type="color" id="AddLineColor" style="width: 100px;"
+                               class="form-control" required>
+                    </div>
+                    <div class="form-group" id="LinemessageBox"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline-info" id="LineListButton" data-toggle="modal"
+                        data-target="#LineListModal"
+                >查看地铁线路表
+                </button>
+                <button id="AddLineButton" type="button" class="btn btn-primary">确认添加</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 线路表-->
+<div class="modal fade" id="LineListModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">上海地铁线路表</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="LineListModalBody"></div>
+        </div>
+    </div>
+</div>
+<!-- 添加连线 -->
+<div class="modal fade" id="EdgeModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">添加连线</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="AddEdgeForm" style="margin-top: 10px;margin-bottom: 10px;">
+                    <select class="form-control" style="width: 190px;margin-bottom: 10px;" id="LineSelect"></select>
+                    <div class="form-group">
+                        <select name="start" id="StationOne" class="form-control" placeholder="请输入站点1名称"
+                                onchange="this.parentNode.nextSibling.value=this.value" required></select>
+                    </div>
+                    <div class="form-group">
+                        <select name="end" id="StationTwo" class="form-control" placeholder="请输入站点2名称"
+                                required></select>
+                    </div>
+                    <div class="form-group" id="EdgemessageBox"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="AddEdgeButton" type="button" class="btn btn-primary">确认添加</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="subwayMap" style="position: fixed;left:320px;top: 10px;">
+    <div class="card bg-light text-dark"
+         style="padding-top: 10px; position: fixed;left:0px;width: 310px;height: 700px;">
+        <div class="card-header">
+            <div class="btn-toolbar" role="toolbar">
+                <div class="btn-group">
+                    <button id="AddStation" type="button" class="btn btn-outline-primary" data-toggle="modal"
+                            data-target="#NodeModal">添加站点
+                    </button>
+                    <button id="AddLine" type="button" class="btn btn-outline-primary" data-toggle="modal"
+                            data-target="#LineModal">添加线路
+                    </button>
+                    <button id="AddLine" type="button" class="btn btn-outline-primary" data-toggle="modal"
+                            data-target="#EdgeModal">添加连线
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div id="DynamicCard" class="tab-content">
+                <div class="tab-pane active container" style="padding-left: 0px; padding-right: 0px;" id="Path">
+                    <form id="FindPathForm">
+                        <div class="form-group">
+                            <select name="start" id="StartStation" class="form-control" placeholder="请输入起点名称"
+                                    required></select>
+                        </div>
+                        <div class="form-group">
+                            <select name="end" id="EndStation" class="form-control" placeholder="请输入终点名称"
+                                    required></select>
+                        </div>
+                    </form>
+                    <input type="radio" id="short_dis" name="drone" checked> <label for="short_dis">路线最短</label>
+                    <input type="radio" id="least_transfer" name="drone"><label
+                        for="less_station_change">换乘最少</label>
+                    <br></br>
+                    <button class="btn btn-primary " id="SearchRoad" data-toggle="modal" data-target="#FindPathModal">
+                        查询线路
+                    </button>
+                    <br></br>
+                    <button class="btn btn-primary" id="LoadButton">还原地铁线路图</button>
+                    <br></br>
+                </div>
+                <div class="form-group" id="PathmessageBox"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="FindPathModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="Pathtitle">上海地铁换乘指南🚇</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="FindPathModalBody">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- js脚本 -->
+<script src="lib/d3.v7.min.js"></script>
+<script src="lib/jquery.min.js"></script>
+<script src="lib/jquery-editable-select.min.js"></script>
+<script src="lib/bootstrap.min.js"></script>
+<script src="js/tools.js"></script>
+<script src="js/map_info.js"></script>
+<script src="js/SubwayGraph.js"></script>
+<script src="js/ShowSubway.js"></script>
+<script src="js/EventResponse.js"></script>
+</body>
+</html>
